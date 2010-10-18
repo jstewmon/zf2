@@ -13,8 +13,8 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ * @package    Zend_Form
+ * @subpackage Decorator
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
@@ -23,18 +23,18 @@
 /**
  * @namespace
  */
-namespace Zend\Search\Lucene\Search;
+namespace Zend\Form\Decorator\Exception;
 
 /**
- * @uses       \Zend\Search\Lucene\Exception
+ * @uses       Zend\Form\Decorator\Exception
+ * @uses       \RunTimeException
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ * @package    Zend_Form
+ * @subpackage Element
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- *
- * Special exception type, which may be used to intercept wrong user input
  */
-class QueryParserException extends \Zend\Search\Lucene\Exception
+class RunTimeException 
+    extends \RunTimeException
+    implements \Zend\Form\Decorator\Exception
 {}
-

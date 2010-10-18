@@ -13,7 +13,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
+ * @package    Zend_Rest
  * @subpackage Client
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
@@ -23,17 +23,18 @@
 /**
  * @namespace
  */
-namespace Zend\XmlRpc\Client;
+namespace Zend\Rest\Client\Exception;
 
 /**
- * Thrown by Zend_XmlRpc_Client when an XML-RPC fault response is returned.
+ * REST client result exception
  *
- * @uses       Zend\XmlRpc\Client\Exception
- * @category   Zend
- * @package    Zend_XmlRpc
+ * @uses       Zend\Rest\Client\Exception
+ * @package    Zend_Rest
  * @subpackage Client
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class FaultException extends Exception
+class ResultException 
+	extends \Exception
+	implements \Zend\Rest\Client\Exception
 {}

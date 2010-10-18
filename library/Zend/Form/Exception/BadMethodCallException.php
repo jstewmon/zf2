@@ -14,27 +14,25 @@
  *
  * @category   Zend
  * @package    Zend_Form
- * @subpackage Element
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 /**
  * @namespace
  */
-namespace Zend\Form;
+namespace Zend\Form\Exception;
 
 /**
- * Exception for Zend_Form component.
- *
- * @uses       \Zend\Form\Exception
+ * @uses       Zend\Form\Exception
+ * @uses       \BadMethodCallException
  * @category   Zend
  * @package    Zend_Form
- * @subpackage Element
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class ElementException extends Exception
-{
-}
+class BadMethodCallException 
+    extends \BadMethodCallException
+    implements \Zend\Form\Exception
+{}
