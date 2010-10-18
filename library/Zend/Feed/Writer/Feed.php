@@ -244,7 +244,7 @@ class Feed extends AbstractFeed implements \Iterator, \Countable
         $this->setType(strtolower($type));
         $type = ucfirst($this->getType());
         if ($type !== 'Rss' && $type !== 'Atom') {
-            throw new Exception('Invalid feed type specified: ' . $type . '.'
+            throw new Exception\InvalidArgumentException('Invalid feed type specified: ' . $type . '.'
             . ' Should be one of "rss" or "atom".');
         }
         $renderClass = 'Renderer\\Feed\\' . $type;

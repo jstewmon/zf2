@@ -97,7 +97,7 @@ class Publisher
         if ($config instanceof \Zend\Config\Config) {
             $config = $config->toArray();
         } elseif (!is_array($config)) {
-            throw new Exception('Array or Zend_Config object'
+            throw new Exception\InvalidArgumentException('Array or Zend_Config object'
                 . 'expected, got ' . gettype($config));
         }
         if (array_key_exists('hubUrls', $config)) {
@@ -269,7 +269,7 @@ class Publisher
         $client = $this->_getHttpClient();
         $hubs   = $this->getHubUrls();
         if (empty($hubs)) {
-            throw new Exception('No Hub Server URLs'
+            throw new Exception\RuntimeException('No Hub Server URLs'
                 . ' have been set so no notifcations can be sent');
         }
         $this->_errors = array();

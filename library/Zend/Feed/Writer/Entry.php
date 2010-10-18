@@ -526,7 +526,7 @@ class Entry
     public function addCategory(array $category)
     {
         if (!isset($category['term'])) {
-            throw new Exception('Each category must be an array and '
+            throw new Exception\InvalidArgumentException('Each category must be an array and '
             . 'contain at least a "term" element containing the machine '
             . ' readable category name');
         }

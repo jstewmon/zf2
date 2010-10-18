@@ -24,6 +24,7 @@
 */
 namespace Zend\Feed\Reader\Entry;
 use Zend\Feed\Reader;
+use Zend\Feed\Reader\Exception;
 use Zend\Date;
 
 /**
@@ -243,7 +244,7 @@ class Rss extends AbstractEntry implements Reader\Entry
                         } catch (Date\Exception $e) {
                             if ($standard == Date\Date::DATES) {
                                 require_once 'Zend/Feed/Exception.php';
-                                throw new Exception(
+                                throw new Exception\InvalidArgumentException(
                                     'Could not load date due to unrecognised'
                                     .' format (should follow RFC 822 or 2822):'
                                     . $e->getMessage(),

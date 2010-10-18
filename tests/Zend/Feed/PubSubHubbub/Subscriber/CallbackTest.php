@@ -93,10 +93,11 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
     public function testThrowsExceptionOnInvalidHttpResponseObjectSet()
     {
-        try {
-            $this->_callback->setHttpResponse(new \stdClass);
-            $this->fail('Should not fail as an Exception would be raised and caught');
-        } catch (PubSubHubbub\Exception $e) {}
+        $this->setExpectedException(
+            'Zend\Feed\PubSubHubbub\Exception\InvalidArgumentException',
+            'HTTP Response object must implement one of Zend\Feed\Pubsubhubbub\HttpResponse or Zend\Controller\Response\Http'
+            );
+        $this->_callback->setHttpResponse(new \stdClass);
     }
 
     public function testThrowsExceptionIfNonObjectSetAsHttpResponseObject()

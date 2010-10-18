@@ -88,7 +88,7 @@ abstract class AbstractCallback implements Callback
         if ($config instanceof \Zend\Config\Config) {
             $config = $config->toArray();
         } elseif (!is_array($config)) {
-            throw new Exception/InvalidArgumentException('Array or Zend_Config object'
+            throw new Exception\InvalidArgumentException('Array or Zend_Config object'
             . 'expected, got ' . gettype($config));
         }
         if (array_key_exists('storage', $config)) {
