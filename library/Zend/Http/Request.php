@@ -76,7 +76,7 @@ class Request extends BaseRequest implements HttpRequest
     public function query($name = null, $default = null)
     {
         if (null === $this->queryParams) {
-            $this->setQuery(new Parameters($_GET));
+            $this->setQuery(new Parameters(/* $_GET */));
         }
 
         if (null !== $name) {
@@ -89,7 +89,7 @@ class Request extends BaseRequest implements HttpRequest
     public function post($name = null, $default = null)
     {
         if (null === $this->postParams) {
-            $this->setPost(new Parameters($_POST));
+            $this->setPost(new Parameters(/* $_POST */));
         }
 
         if (null !== $name) {
@@ -102,7 +102,7 @@ class Request extends BaseRequest implements HttpRequest
     public function cookie($name = null, $default = null)
     {
         if (null === $this->cookieParams) {
-            $this->setCookies(new Parameters($_COOKIE));
+            $this->setCookies(new Parameters(/* $_COOKIE */));
         }
 
         if (null !== $name) {
@@ -115,7 +115,7 @@ class Request extends BaseRequest implements HttpRequest
     public function file($name = null)
     {
         if (null === $this->fileParams) {
-            $this->setFiles(new Parameters($_FILES));
+            $this->setFiles(new Parameters(/* $_FILES */));
         }
 
         if (null !== $name) {
@@ -128,7 +128,7 @@ class Request extends BaseRequest implements HttpRequest
     public function server($name = null, $default = null)
     {
         if (null === $this->serverParams) {
-            $this->setServer(new Parameters($_SERVER));
+            $this->setServer(new Parameters(/* $_SERVER */));
         }
 
         if (null !== $name) {
@@ -141,7 +141,7 @@ class Request extends BaseRequest implements HttpRequest
     public function env($name = null, $default = null)
     {
         if (null === $this->envParams) {
-            $this->setEnv(new Parameters($_ENV));
+            $this->setEnv(new Parameters(/* $_ENV */));
         }
 
         if (null !== $name) {
@@ -353,9 +353,9 @@ class Request extends BaseRequest implements HttpRequest
     {
     }
 
-    public static function create($uri, $method = 'get' /** .. more args */)
-    {
-    }
+    //public static function create($uri, $method = 'get' /** .. more args */)
+    //{
+    //}
 
     // not sure if this needs to be in interface
     public function __clone()
