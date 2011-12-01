@@ -2,7 +2,7 @@
 
 namespace Zend\Di;
 
-interface DependencyInjection extends Locator
+interface DependencyInjection
 {
     /**
      * Retrieve a new instance of a class
