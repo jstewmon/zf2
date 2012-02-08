@@ -5,7 +5,7 @@ namespace Zend\Db\ResultSet;
 use Iterator,
     IteratorAggregate;
 
-class ResultSet implements Iterator, ResultCollection
+class ResultSet implements Iterator, ResultSetInterface
 {
     const TYPE_OBJECT = 'object';
     const TYPE_ARRAY  = 'array';
@@ -14,11 +14,11 @@ class ResultSet implements Iterator, ResultCollection
     protected $returnType = self::TYPE_OBJECT;
     
     /**
-     * @var \Zend\Db\ResultSet\DataSource
+     * @var \Zend\Db\ResultSet\DataSourceInterface
      */
     protected $dataSource = null;
 
-    public function __construct(DataSource $dataSource = null, RowObject $rowObjectPrototype = null)
+    public function __construct(DataSourceInterface $dataSource = null, RowObjectInterface $rowObjectPrototype = null)
     {
         if ($dataSource) {
             $this->setDataSource($dataSource);

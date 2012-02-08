@@ -5,7 +5,7 @@ namespace Zend\Db\ResultSet;
 use ArrayAccess,
     Countable;
 
-interface RowObject extends Countable, ArrayAccess
+interface RowObjectInterface extends Countable, ArrayAccess
 {
 
 }

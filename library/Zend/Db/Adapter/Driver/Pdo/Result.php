@@ -2,8 +2,8 @@
 
 namespace Zend\Db\Adapter\Driver\Pdo;
 
-use Zend\Db\Adapter\Driver,
-    Zend\Db\Adapter\DriverResult,
+use Zend\Db\Adapter\DriverInterface,
+    Zend\Db\Adapter\DriverResultInterface,
     Iterator,
     PDO,
     PDOStatement;
@@ -13,7 +13,7 @@ use Zend\Db\Adapter\Driver,
  *
  * @todo Use PDO's native interface for fetching into named objects?
  */
-class Result implements Iterator, DriverResult
+class Result implements Iterator, DriverResultInterface
 {
 
     const STATEMENT_MODE_SCROLLABLE = 'scrollable';
@@ -54,7 +54,7 @@ class Result implements Iterator, DriverResult
      */
     protected $position = -1;
 
-    public function setDriver(Driver $driver)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;

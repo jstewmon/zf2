@@ -5,6 +5,6 @@ namespace Zend\Db\ResultSet;
 use Countable,
     Traversable;
 
-interface DataSource extends Traversable, Countable
+interface DataSourceInterface extends Traversable, Countable
 {
 }

@@ -3,10 +3,10 @@
 namespace Zend\Db\Adapter\Driver\Mysqli;
 
 use Zend\Db\Adapter,
-    Zend\Db\Adapter\DriverResult,
+    Zend\Db\Adapter\DriverResultInterface,
     Iterator;
 
-class Result implements Iterator, DriverResult
+class Result implements Iterator, DriverResultInterface
 {
     const MODE_STATEMENT = 'statement';
     const MODE_RESULT = 'result';
@@ -54,7 +54,7 @@ class Result implements Iterator, DriverResult
     protected $statementBindValues = array('keys' => null, 'values' => array());
     
     
-    public function setDriver(Adapter\Driver $driver)
+    public function setDriver(Adapter\DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;

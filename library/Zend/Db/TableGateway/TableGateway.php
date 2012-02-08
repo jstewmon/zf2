@@ -2,20 +2,21 @@
 
 namespace Zend\Db\TableGateway;
 
-use Zend\Db\Adapter,
-    Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Adapter\Adapter,
+    Zend\Db\ResultSet\ResultSet,
+    Zend\Db\ResultSet\ResultSetInterface;
 
 class TableGateway implements TableGatewayInterface
 {
     const USE_STATIC_ADAPTER = null;
 
     /**
-     * @var \Zend\Db\Adapter[]
+     * @var \Zend\Db\Adapter\Adapter[]
      */
     protected static $staticAdapters = array();
 
     /**
-     * @var \Zend\Db\Adapter
+     * @var \Zend\Db\Adapter\Adapter
      */
     protected $adapter = null;
 
@@ -63,20 +64,54 @@ class TableGateway implements TableGatewayInterface
 
     public function __construct($tableName, Adapter $adapter = null, $databaseSchema = null, ResultSet $selectResultPrototype = null)
     {
-        $this->tableName = $tableName;
+        $this->setTableName($tableName);
+
         if ($adapter === self::USE_STATIC_ADAPTER) {
             $adapter = static::getStaticAdapter();
         }
-        $this->adapter = $adapter;
+
+        $this->setAdapter($adapter);
+
         if (is_string($databaseSchema)) {
             $this->databaseSchema = $databaseSchema;
         }
-        $this->selectResultPrototype = ($selectResultPrototype) ?: new ResultSet;
+        $this->setSelectResultPrototype(($selectResultPrototype) ?: new ResultSet);
+    }
+
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+        return $this;
     }
 
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    public function setAdapter(Adapter $adapter)
+    {
+        $this->adapter = $adapter;
+        return $this;
+    }
+
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
+
+
+    /**
+     * @param null $selectResultPrototype
+     */
+    public function setSelectResultPrototype($selectResultPrototype)
+    {
+        $this->selectResultPrototype = $selectResultPrototype;
+    }
+
+    public function getSelectResultPrototype()
+    {
+        return $this->selectResultPrototype;
     }
 
     public function select($where)
@@ -135,7 +170,7 @@ class TableGateway implements TableGatewayInterface
                 $setParamName = $driver->formatParameterName($setName);
                 $setSqlColumns[] = $platform->quoteIdentifier($setName);
                 $setSqlValues[]  = $setParamName;
-                $setParameters[$setParamName] = $setValue;
+                $setParameters[$setName] = $setValue;
             }
             $setSql = '(' . implode(', ', $setSqlColumns) . ') VALUES (' . implode(', ', $setSqlValues) . ')';
         }
@@ -182,7 +217,7 @@ class TableGateway implements TableGatewayInterface
             foreach ($where as $whereName => $whereValue) {
                 $whereParamName = $driver->formatParameterName($whereName);
                 $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-                $parameters[$whereParamName] = $whereValue;
+                $parameters[$whereName] = $whereValue;
             }
             $whereSql = implode(' AND ', $whereSql);
         }
@@ -214,7 +249,7 @@ class TableGateway implements TableGatewayInterface
             foreach ($where as $whereName => $whereValue) {
                 $whereParamName = $driver->formatParameterName($whereName);
                 $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-                $whereParameters[$whereParamName] = $whereValue;
+                $whereParameters[$whereName] = $whereValue;
             }
             $whereSql = implode(' AND ', $whereSql);
         }
@@ -227,5 +262,6 @@ class TableGateway implements TableGatewayInterface
         // return affected rows
         return $result->getAffectedRows();
     }
+
 
 }

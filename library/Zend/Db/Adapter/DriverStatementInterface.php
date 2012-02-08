@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter;
 
-interface DriverStatement
+interface DriverStatementInterface
 {
 //    /**
 //     * @param string $sql
@@ -20,9 +20,9 @@ interface DriverStatement
 //    public function setResource($resource);
 
 //    /**
-//     * @param DriverStatement\ParameterContainer $parameterContainer
+//     * @param ParameterContainer\ParameterContainer $parameterContainer
 //     */
-//    public function setParameterContainer(DriverStatement\ParameterContainer $parameterContainer);
+//    public function setParameterContainer(ParameterContainer\ParameterContainer $parameterContainer);
 
     /**
      * @return resource

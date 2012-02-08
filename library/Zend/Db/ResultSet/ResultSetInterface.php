@@ -2,7 +2,7 @@
 
 namespace Zend\Db\ResultSet;
 
-interface ResultCollection extends \Countable, \Traversable
+interface ResultSetInterface extends \Countable, \Traversable
 {
     public function getFieldCount();
     

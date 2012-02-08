@@ -4,7 +4,7 @@ namespace Zend\Db\Adapter\DriverStatement;
 
 use Iterator;
 
-class NamedParameterContainer implements Iterator, ParameterContainer
+class NamedParameterContainer implements Iterator, ParameterContainerInterface
 {
     const ARRAY_IS_NAMES = 'names';
     const ARRAY_IS_NAMES_AND_VALUES = 'namesAndValues';

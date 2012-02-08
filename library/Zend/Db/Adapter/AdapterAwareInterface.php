@@ -1,6 +1,6 @@
 <?php
 
-namespace Zend\Db;
+namespace Zend\Db\Adapter;
 
 interface AdapterAware
 {

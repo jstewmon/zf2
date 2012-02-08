@@ -2,13 +2,13 @@
 
 namespace Zend\Db\Adapter\Driver\Sqlsrv;
 
-use Zend\Db\Adapter\DriverStatement;
+use Zend\Db\Adapter\DriverStatementInterface;
 
-class Statement implements DriverStatement
+class Statement implements DriverStatementInterface
 {
 
     /**
-     * @var \Zend\Db\Adapter\Driver
+     * @var \Zend\Db\Adapter\DriverInterface
      */
     protected $driver = null;
 
@@ -28,7 +28,7 @@ class Statement implements DriverStatement
     protected $parameterReferences = array();
     
     /**
-     * @var Zend\Db\Adapter\DriverStatement\ParameterContainer
+     * @var Zend\Db\Adapter\ParameterContainer\ParameterContainer
      */
     protected $parameterContainer = null;
     
@@ -37,7 +37,7 @@ class Statement implements DriverStatement
      */
     protected $resource = null;
 
-    public function setDriver(\Zend\Db\Adapter\Driver $driver)
+    public function setDriver(\Zend\Db\Adapter\DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;

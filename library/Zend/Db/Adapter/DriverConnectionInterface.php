@@ -2,9 +2,9 @@
 
 namespace Zend\Db\Adapter;
 
-interface DriverConnection
+interface DriverConnectionInterface
 {
-    public function setDriver(Driver $driver);
+    public function setDriver(DriverInterface $driver);
 
     // public function setConnectionParams(array $connectionParams); // this really belongs in a separate interface
     
@@ -21,7 +21,7 @@ interface DriverConnection
     public function execute($sql); // return result set
     
     /**
-     * @return \Zend\Db\Adapter\DriverStatement
+     * @return \Zend\Db\Adapter\DriverStatementInterface
      */
     public function prepare($sql); // must return StatementInterface object
 }

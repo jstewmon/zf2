@@ -2,17 +2,18 @@
 
 namespace Zend\Db\Adapter\Driver\Pdo;
 
-use Zend\Db\Adapter\DriverStatement\ParameterContainer,
-    Zend\Db\Adapter\DriverStatement,
-    Zend\Db\Adapter\Driver,
+use Zend\Db\Adapter\ParameterContainerInterface,
+    Zend\Db\Adapter\ParameterContainer,
+    Zend\Db\Adapter\DriverStatementInterface,
+    Zend\Db\Adapter\DriverInterface,
     Zend\Db\Adapter\Exception,
     PDO,
     PDOStatement;
 
-class Statement implements DriverStatement
+class Statement implements DriverStatementInterface
 {
     /**
-     * @var \Zend\Db\Adapter\Driver
+     * @var \Zend\Db\Adapter\DriverInterface
      */
     protected $driver             = null;
     protected $sql                = false;
@@ -24,7 +25,7 @@ class Statement implements DriverStatement
      */
     protected $resource = null;
     
-    public function setDriver(Driver $driver)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;
@@ -68,16 +69,15 @@ class Statement implements DriverStatement
     /**
      * @todo  Should this use the ability of PDOStatement to return objects of a specified class?
      * @param mixed $parameters 
-     * @return void
+     * @return Result
      */
     public function execute($parameters = null)
     {
         if ($parameters != null) {
             if (is_array($parameters)) {
-                $containerFactor = new \Zend\Db\Adapter\DriverStatement\ContainerFactory();
-                $parameters = $containerFactor->createContainer($parameters);
+                $parameters = new ParameterContainer($parameters);
             }
-            if (!$parameters instanceof ParameterContainer) {
+            if (!$parameters instanceof ParameterContainerInterface) {
                 throw new \InvalidArgumentException('ParameterContainer expected');
             }
             $this->bindParametersFromContainer($parameters);
@@ -91,20 +91,20 @@ class Statement implements DriverStatement
         return $result;
     }
     
-    protected function bindParametersFromContainer(ParameterContainer $container)
+    protected function bindParametersFromContainer(ParameterContainerInterface $container)
     {
         $parameters = $container->toArray();
         foreach ($parameters as $position => &$value) {
             $type = PDO::PARAM_STR;
             if ($container->offsetHasErrata($position)) {
                 switch ($container->offsetGetErrata($position)) {
-                    case ParameterContainer::TYPE_INTEGER:
+                    case ParameterContainerInterface::TYPE_INTEGER:
                         $type = PDO::PARAM_INT;
                         break;
-                    case ParameterContainer::TYPE_NULL:
+                    case ParameterContainerInterface::TYPE_NULL:
                         $type = PDO::PARAM_NULL;
                         break;
-                    case ParameterContainer::TYPE_LOB:
+                    case ParameterContainerInterface::TYPE_LOB:
                         $type = PDO::PARAM_LOB;
                         break;
                     case (is_bool($value)):

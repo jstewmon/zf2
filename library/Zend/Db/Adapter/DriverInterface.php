@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter;
 
-interface Driver
+interface DriverInterface
 {
     const NAME_FORMAT_CAMELCASE = 'camelCase';
     const NAME_FORMAT_NATURAL = 'natural';
@@ -19,17 +19,17 @@ interface Driver
     public function checkEnvironment();
 
     /**
-     * @return DriverConnection
+     * @return DriverConnectionInterface
      */
     public function getConnection();
 
     /**
-     * @return DriverStatement
+     * @return DriverStatementInterface
      */
     public function createStatement($sqlOrResource);
 
     /**
-     * @return DriverResult
+     * @return DriverResultInterface
      */
     public function createResult($resource);
 

@@ -4,10 +4,10 @@ namespace Zend\Db\Adapter\Driver\Sqlsrv;
 use Zend\Db\Adapter;
 
 
-class Connection implements Adapter\DriverConnection
+class Connection implements Adapter\DriverConnectionInterface
 {
     /**
-     * @var \Zend\Db\Adapter\Driver
+     * @var \Zend\Db\Adapter\DriverInterface
      */
     protected $driver = null;
 
@@ -33,7 +33,7 @@ class Connection implements Adapter\DriverConnection
         }
     }
     
-    public function setDriver(Adapter\Driver $driver)
+    public function setDriver(Adapter\DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;

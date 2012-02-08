@@ -3,7 +3,9 @@
  * File DocBlock
  */
 
-namespace Zend\Db;
+namespace Zend\Db\Adapter;
+
+use Zend\Db\ResultSet;
 
 /**
  * Class DocBlock
@@ -32,12 +34,12 @@ class Adapter
     const BUILTIN_PLATFORMS_NAMESPACE = 'Zend\Db\Adapter\Platform';
 
     /**
-     * @var Adapter\Driver
+     * @var DriverInterface
      */
     protected $driver = null;
 
     /**
-     * @var Adapter\Platform
+     * @var PlatformInterface
      */
     protected $platform = null;
 
@@ -53,17 +55,17 @@ class Adapter
 
 
     /**
-     * @param Adapter\Driver|array $driver
-     * @param Adapter\Platform $platform
+     * @param DriverInterface|array $driver
+     * @param PlatformInterface $platform
      * @param ResultSet\ResultSet $queryResultPrototype
      */
-    public function __construct($driver, Adapter\Platform $platform = null, ResultSet\ResultSet $queryResultPrototype = null)
+    public function __construct($driver, PlatformInterface $platform = null, ResultSet\ResultSet $queryResultPrototype = null)
     {
         if (is_array($driver)) {
             $driver = $this->createDriverFromParameters($driver);
         }
 
-        if (!$driver instanceof Adapter\Driver) {
+        if (!$driver instanceof DriverInterface) {
             throw new \InvalidArgumentException('Invalid driver');
         }
 
@@ -82,10 +84,10 @@ class Adapter
     /**
      * setDriver()
      * 
-     * @param Adapter\Driver $driver
+     * @param DriverInterface $driver
      * @return Adapter
      */
-    public function setDriver(Adapter\Driver $driver)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;
@@ -93,7 +95,7 @@ class Adapter
 
     /**
      * @param array $parameters
-     * @return Adapter\Driver
+     * @return DriverInterface
      * @throws \InvalidArgumentException
      */
     public function createDriverFromParameters(array $parameters)
@@ -115,7 +117,7 @@ class Adapter
             throw new \InvalidArgumentException('Class by name ' . $driver . ' not found', null, null);
         }
 
-        if (!$driver instanceof Adapter\Driver) {
+        if (!$driver instanceof DriverInterface) {
             throw new \InvalidArgumentException('$driver provided is neither a driver class name or object of type DriverInterface', null, null);
         }
 
@@ -126,7 +128,7 @@ class Adapter
      * getDriver()
      * 
      * @throws Exception
-     * @return Adapter\Driver
+     * @return DriverInterface
      */
     public function getDriver()
     {
@@ -152,17 +154,17 @@ class Adapter
     }
 
     /**
-     * @param Adapter\Platform $platform
+     * @param PlatformInterface $platform
      * @return Adapter
      */
-    public function setPlatform(Adapter\Platform $platform)
+    public function setPlatform(PlatformInterface $platform)
     {
         $this->platform = $platform;
         return $this;
     }
 
     /**
-     * @return Adapter\Platform
+     * @return PlatformInterface
      */
     public function getPlatform()
     {
@@ -170,13 +172,13 @@ class Adapter
     }
 
     /**
-     * @param Adapter\Driver $driver
-     * @return Adapter\Platform
+     * @param DriverInterface $driver
+     * @return PlatformInterface
      */
-    public function createPlatformFromDriver(Adapter\Driver $driver)
+    public function createPlatformFromDriver(DriverInterface $driver)
     {
         // consult driver for platform implementation
-        $platform = $driver->getDatabasePlatformName(Adapter\Driver::NAME_FORMAT_CAMELCASE);
+        $platform = $driver->getDatabasePlatformName(DriverInterface::NAME_FORMAT_CAMELCASE);
         if ($platform == '') {
             $platform = 'Sql92';
         }

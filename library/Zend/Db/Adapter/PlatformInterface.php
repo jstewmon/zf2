@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter;
 
-interface Platform
+interface PlatformInterface
 {
     public function getName();
     

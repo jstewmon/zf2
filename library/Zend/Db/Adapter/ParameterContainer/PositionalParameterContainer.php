@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter\DriverStatement;
 
-class PositionalParameterContainer extends \SplFixedArray implements ParameterContainer
+class PositionalParameterContainer extends \SplFixedArray implements ParameterContainerInterface
 {
     protected $errata = array();
     

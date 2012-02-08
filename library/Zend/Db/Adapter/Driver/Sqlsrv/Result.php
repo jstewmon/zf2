@@ -2,10 +2,10 @@
 
 namespace Zend\Db\Adapter\Driver\Sqlsrv;
 
-use Zend\Db\Adapter\DriverResult,
+use Zend\Db\Adapter\DriverResultInterface,
     Iterator;
 
-class Result implements Iterator, DriverResult
+class Result implements Iterator, DriverResultInterface
 {
     /**
      * @var Zend\Db\Adapter\Driver\AbstractDriver
@@ -23,7 +23,7 @@ class Result implements Iterator, DriverResult
 
     protected $position = -1;
 
-    public function setDriver(\Zend\Db\Adapter\Driver $driver)
+    public function setDriver(\Zend\Db\Adapter\DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;
@@ -97,6 +97,6 @@ class Result implements Iterator, DriverResult
 
     public function getAffectedRows()
     {
-        // TODO: Implement getAffectedRows() method.
+        return sqlsrv_rows_affected($this->resource);
     }
 }

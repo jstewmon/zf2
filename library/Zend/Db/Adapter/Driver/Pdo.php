@@ -4,7 +4,7 @@ namespace Zend\Db\Adapter\Driver;
 
 use PDOStatement;
 
-class Pdo implements \Zend\Db\Adapter\Driver
+class Pdo implements \Zend\Db\Adapter\DriverInterface
 {
     /**
      * @var Pdo\Connection

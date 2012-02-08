@@ -2,7 +2,7 @@
 
 namespace Zend\Db\ResultSet;
 
-class Row implements RowObject
+class Row implements RowObjectInterface
 {
     /*
     const KEY_POSITION = 'position';

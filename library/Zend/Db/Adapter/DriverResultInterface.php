@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter;
 
-interface DriverResult extends \Countable, \Traversable
+interface DriverResultInterface extends \Countable, \Traversable
 {
     public function isQueryResult();
     public function getAffectedRows();

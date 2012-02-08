@@ -4,7 +4,7 @@ namespace Zend\Db\Adapter\Driver\Mysqli;
 use Zend\Db\Adapter;
 
 
-class Connection implements Adapter\DriverConnection
+class Connection implements Adapter\DriverConnectionInterface
 {
     /**
      * @var \Zend\Db\Adapter\Driver\Mysqli
@@ -27,7 +27,7 @@ class Connection implements Adapter\DriverConnection
         }
     }
 
-    public function setDriver(Adapter\Driver $driver)
+    public function setDriver(Adapter\DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;

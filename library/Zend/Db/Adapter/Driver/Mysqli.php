@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter\Driver;
 
-class Mysqli implements \Zend\Db\Adapter\Driver
+class Mysqli implements \Zend\Db\Adapter\DriverInterface
 {
 
     /**

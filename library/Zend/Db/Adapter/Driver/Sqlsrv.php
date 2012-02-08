@@ -2,7 +2,7 @@
 
 namespace Zend\Db\Adapter\Driver;
 
-class Sqlsrv implements \Zend\Db\Adapter\Driver
+class Sqlsrv implements \Zend\Db\Adapter\DriverInterface
 {
 
     /**

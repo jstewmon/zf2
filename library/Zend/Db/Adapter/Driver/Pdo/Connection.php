@@ -3,14 +3,14 @@
 namespace Zend\Db\Adapter\Driver\Pdo;
 
 use Zend\Db\Adapter,
-    Zend\Db\Adapter\Driver,
+    Zend\Db\Adapter\DriverInterface,
     Zend\Db\Adapter\Exception\InvalidQueryException,
     PDO,
     PDOException,
     PDOStatement;
 
 
-class Connection implements Adapter\DriverConnection
+class Connection implements Adapter\DriverConnectionInterface
 {
     /**
      * @var \Zend\Db\Adapter\Driver\Pdo
@@ -43,10 +43,10 @@ class Connection implements Adapter\DriverConnection
     }
 
     /**
-     * @param Driver $driver
+     * @param DriverInterface $driver
      * @return Connection
      */
-    public function setDriver(Driver $driver)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
         return $this;
