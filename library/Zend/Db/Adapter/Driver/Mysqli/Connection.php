@@ -176,5 +176,9 @@ class Connection implements Adapter\DriverConnectionInterface
         return $statement;
     }
 
+    public function getLastGeneratedId()
+    {
+        return $this->resource->insert_id;
+    }
 }
     

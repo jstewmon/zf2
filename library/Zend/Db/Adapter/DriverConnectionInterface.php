@@ -19,6 +19,8 @@ interface DriverConnectionInterface
     public function commit();
     public function rollback();
     public function execute($sql); // return result set
+
+    public function getLastGeneratedId();
     
     /**
      * @return \Zend\Db\Adapter\DriverStatementInterface
