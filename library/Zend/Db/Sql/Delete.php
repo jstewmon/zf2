@@ -9,6 +9,8 @@ use Zend\Db\Adapter\Adapter,
 
 class Delete implements SqlInterface, ParameterizedSqlInterface
 {
+    protected $specification = 'DELETE FROM %1$s WHERE %2$s';
+
     protected $databaseOrSchema = null;
     protected $table = null;
     protected $emptyWhereProtection = true;
@@ -18,7 +20,7 @@ class Delete implements SqlInterface, ParameterizedSqlInterface
     public function __construct($table = null, $databaseOrSchema = null)
     {
         if ($table) {
-            $this->table($table, $databaseOrSchema);
+            $this->from($table, $databaseOrSchema);
         }
     }
 
@@ -33,86 +35,76 @@ class Delete implements SqlInterface, ParameterizedSqlInterface
 
     public function where($where)
     {
-        //if (is_array($where)) {
-        //    $whereArray = $where;
-        //    $where = new Predicate\Predicate();
-        //
-        //}
-
-        //if (!is_string($where) || !)
+        $this->where = $where;
+        return $this;
     }
 
     public function isValid()
     {
-        if ($this->table == null || !is_string($this->table)) {
-            return false;
-        }
-
-        if (count($this->values) == 0) {
-            return false;
-        }
-
-        if (count($this->columns) > 0 && count($this->columns) != count($this->values)) {
-            return false;
-        }
+//        if ($this->table == null || !is_string($this->table)) {
+//            return false;
+//        }
+//
+//        if (count($this->values) == 0) {
+//            return false;
+//        }
+//
+//        if (count($this->columns) > 0 && count($this->columns) != count($this->values)) {
+//            return false;
+//        }
 
         return true;
     }
 
     public function getParameterizedSqlString(Adapter $adapter)
     {
-        //$driver   = $this->db->adapter()->getDriver();
-        //$platform = $this->db->adapter()->getPlatform();
-        //
-        //$table = $platform->quoteIdentifier($this->table);
-        //$sql = 'INSERT INTO ' . $table . ' ';
-        //
-        //$columns = array_map(array($platform, 'quoteIdentifier'), $this->columns);
-        //$sql .= '(' . implode(', ', $columns) . ') ';
-        //
-        //$type = $this->determineTypeFromDriver();
-        //
-        //switch ($type) {
-        //    case self::TYPE_EXECUTABLE:
-        //        $values = array_map(array($platform, 'quoteValue'), $this->values);
-        //        $sql .= 'VALUES (' . implode(', ', $values) . ')';
-        //        break;
-        //    case self::TYPE_PREPARABLE_POSITIONAL:
-        //        $sql .= 'VALUES (' . str_repeat('?,', count($columns)-1) . ' ?)';
-        //        break;
-        //    case self::TYPE_PREPARABLE_NAMED:
-        //        $sql .= 'VALUES (';
-        //        $sqlNames = array();
-        //        foreach ($columns as $column) {
-        //            $sqlNames = $driver->formatNamedParameter($column);
-        //        }
-        //        $sql .= implode(', ', $sqlNames) . ')';
-        //        break;
-        //}
-        //
-        //return $sql;
+        $driver   = $adapter->getDriver();
+        $platform = $adapter->getPlatform();
+
+        $table = $platform->quoteIdentifier($this->table);
+        if ($this->databaseOrSchema != '') {
+            $table = $platform->quoteIdentifier($this->databaseOrSchema)
+                . $platform->getIdentifierSeparator()
+                . $table;
+        }
+
+        $where = $this->where;
+        if (is_array($where)) {
+            $whereSql = array();
+            foreach ($where as $whereName => $whereValue) {
+                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $driver->formatParameterName($whereName);
+            }
+            $where = implode(' AND ', $whereSql);
+        }
+
+        $sql = sprintf($this->specification, $table, $where);
+        return $adapter->getDriver()->getConnection()->prepare($sql);
     }
 
     public function getParameterContainer()
     {
-        //$type = $this->determineTypeFromDriver();
-        //switch ($type) {
-        //    case self::TYPE_EXECUTABLE:
-        //    case self::TYPE_PREPARABLE_POSITIONAL:
-        //        return $this->values;
-        //    case self::TYPE_PREPARABLE_NAMED:
-        //        $driver = $this->db->adapter()->getDriver();
-        //        $values = array();
-        //        foreach ($this->columns as $column) {
-        //            $values[$driver->formatNamedParameter($column)] = $this->values[$column];
-        //        }
-        //        return $values;
-        //}
+        return new ParameterContainer(array_merge($this->set, $this->where));
     }
 
-    public function getSqlString()
+    public function getSqlString(PlatformInterface $platform = null)
     {
-        // TODO: Implement getSqlString() method.
+        $platform = ($platform) ?: new Sql92;
+        $table = $platform->quoteIdentifier($this->table);
+
+        if ($this->databaseOrSchema != '') {
+            $table = $platform->quoteIdentifier($this->databaseOrSchema) . $platform->getIdentifierSeparator() . $table;
+        }
+
+        $where = $this->where;
+        if (is_array($where)) {
+            $whereSql = array();
+            foreach ($where as $whereName => $whereValue) {
+                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $platform->quoteValue($whereName);
+            }
+            $where = implode(' AND ', $whereSql);
+        }
+
+        return sprintf($this->specification, $table, $where);
     }
 
 }

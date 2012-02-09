@@ -12,6 +12,8 @@ class Insert implements SqlInterface, ParameterizedSqlInterface
     const VALUES_MERGE = 'merge';
     const VALUES_SET   = 'set';
 
+    protected $specification = 'INSERT INTO %1$s (%2$s) VALUES (%3$s)';
+
     protected $databaseOrSchema = null;
 
     protected $table = null;
@@ -121,22 +123,19 @@ class Insert implements SqlInterface, ParameterizedSqlInterface
     public function getSqlString(PlatformInterface $platform = null)
     {
         $platform = ($platform) ?: new Sql92;
-
         $table = $platform->quoteIdentifier($this->table);
 
         if ($this->databaseOrSchema != '') {
             $table = $platform->quoteIdentifier($this->databaseOrSchema) . $platform->getIdentifierSeparator() . $table;
         }
 
-        $sql = 'INSERT INTO ' . $table . ' ';
-
         $columns = array_map(array($platform, 'quoteIdentifier'), $this->columns);
-        $sql .= '(' . implode(', ', $columns) . ') ';
+        $columns = implode(', ', $columns);
 
         $values = array_map(array($platform, 'quoteValue'), $this->values);
-        $sql .= 'VALUES (' . implode(', ', $values) . ')';
+        $values = implode(', ', $values);
 
-        return $sql;
+        return sprintf($this->specification, $table, $columns, $values);
     }
 
     public function getParameterizedSqlString(Adapter $adapter)
@@ -144,25 +143,26 @@ class Insert implements SqlInterface, ParameterizedSqlInterface
         $driver   = $adapter->getDriver();
         $platform = $adapter->getPlatform();
 
-        $sql = 'INSERT INTO ';
+        $table = $platform->quoteIdentifier($this->table);
         if ($this->databaseOrSchema != '') {
-            $sql .= $platform->quoteIdentifier($this->databaseOrSchema)
-                . $platform->getIdentifierSeparator();
+            $table = $platform->quoteIdentifier($this->databaseOrSchema)
+                . $platform->getIdentifierSeparator()
+                . $table;
         }
-        $sql .= $platform->quoteIdentifier($this->table);
 
-        $sqlColumns = $sqlNames = array();
-        foreach ($this->columns as $column) {
-            $sqlColumns = $platform->quoteIdentifier($column);
-            $sqlNames = $driver->formatParameterName($column);
-        }
-        $sql .= '(' . implode(', ', $sqlColumns) . ') VALUES (' . implode(', ', $sqlNames) . ')';
-        return $sql;
+        $columns = array_map(array($platform, 'quoteIdentifier'), $this->columns);
+        $columns = implode(', ', $columns);
+
+        $values = array_map(array($driver, 'formatParameterName'), $this->columns);
+        $values = implode(', ', $values);
+
+        $sql = sprintf($this->specification, $table, $columns, $values);
+        return $adapter->getDriver()->getConnection()->prepare($sql);
     }
 
     public function getParameterContainer()
     {
-        return new ParameterContainer($this->values);
+        return new ParameterContainer(array_combine($this->columns, $this->values));
     }
 
 }

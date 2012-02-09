@@ -4,7 +4,11 @@ namespace Zend\Db\TableGateway;
 
 use Zend\Db\Adapter\Adapter,
     Zend\Db\ResultSet\ResultSet,
-    Zend\Db\ResultSet\ResultSetInterface;
+    Zend\Db\ResultSet\ResultSetInterface,
+    Zend\Db\Sql\Insert,
+    Zend\Db\Sql\Update,
+    Zend\Db\Sql\Delete,
+    Zend\Db\Sql\Select;
 
 class TableGateway implements TableGatewayInterface
 {
@@ -34,6 +38,26 @@ class TableGateway implements TableGatewayInterface
      * @var null
      */
     protected $selectResultPrototype = null;
+
+    /**
+     * @var Select
+     */
+    protected $sqlSelect = null;
+
+    /**
+     * @var Insert
+     */
+    protected $sqlInsert = null;
+
+    /**
+     * @var Update
+     */
+    protected $sqlUpdate = null;
+
+    /**
+     * @var Delete
+     */
+    protected $sqlDelete = null;
 
     public static function setStaticAdapter(Adapter $adapter)
     {
@@ -76,6 +100,11 @@ class TableGateway implements TableGatewayInterface
             $this->databaseSchema = $databaseSchema;
         }
         $this->setSelectResultPrototype(($selectResultPrototype) ?: new ResultSet);
+
+        $this->sqlSelect = new Select();
+        $this->sqlInsert = new Insert();
+        $this->sqlUpdate = new Update();
+        $this->sqlDelete = new Delete();
     }
 
     public function setTableName($tableName)
@@ -151,116 +180,67 @@ class TableGateway implements TableGatewayInterface
 
     public function insert($set)
     {
-        // replace with Db\Sql select
-        $adapter  = $this->adapter;
-        $driver   = $adapter->getDriver();
-        $platform = $adapter->getPlatform();
+        $insert = clone $this->sqlInsert;
+        $insert->into($this->tableName, $this->databaseSchema);
+        $insert->values($set);
 
-        $sql = 'INSERT INTO ';
-        if ($this->databaseSchema != '') {
-            $sql .= $platform->quoteIdentifier($this->databaseSchema)
-                . $platform->getIdentifierSeparator();
-        }
-        $sql .= $platform->quoteIdentifier($this->tableName);
-
-        $setSql = $set;
-        if (is_array($set)) {
-            $setSqlColumns = $setSqlValues = $parameters = array();
-            foreach ($set as $setName => $setValue) {
-                $setParamName = $driver->formatParameterName($setName);
-                $setSqlColumns[] = $platform->quoteIdentifier($setName);
-                $setSqlValues[]  = $setParamName;
-                $setParameters[$setName] = $setValue;
-            }
-            $setSql = '(' . implode(', ', $setSqlColumns) . ') VALUES (' . implode(', ', $setSqlValues) . ')';
-        }
-        $sql .= ' ' . $setSql;
-
-        $statement = $driver->getConnection()->prepare($sql);
-        $result = $statement->execute($setParameters);
-
-        // return affected rows
+        $statement = $insert->getParameterizedSqlString($this->adapter);
+        $result = $statement->execute($insert->getParameterContainer());
         return $result->getAffectedRows();
     }
 
     public function update($set, $where)
     {
-        // replace with Db\Sql select
-        $adapter  = $this->adapter;
-        $driver   = $adapter->getDriver();
-        $platform = $adapter->getPlatform();
+        $update = clone $this->sqlUpdate;
+        $update->table($this->tableName, $this->databaseSchema);
+        $update->set($set);
+        $update->where($where);
 
-        $sql = 'UPDATE ';
-        if ($this->databaseSchema != '') {
-            $sql .= $platform->quoteIdentifier($this->databaseSchema)
-                . $platform->getIdentifierSeparator();
-        }
-        $sql .= $platform->quoteIdentifier($this->tableName);
-
-        $parameters = array();
-
-        $setSql = $set;
-        if (is_array($where)) {
-            $setSql = array();
-            foreach ($set as $setName => $setValue) {
-                $setParamName = $driver->formatParameterName($setName);
-                $setSql[] = $platform->quoteIdentifier($setName) . ' = ' . $setParamName;
-                $parameters[$setParamName] = $setValue;
-            }
-            $setSql = implode(', ', $setSql);
-        }
-        $sql .= ' SET ' . $setSql;
-
-        $whereSql = $where;
-        if (is_array($where)) {
-            $whereSql = array();
-            foreach ($where as $whereName => $whereValue) {
-                $whereParamName = $driver->formatParameterName($whereName);
-                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-                $parameters[$whereName] = $whereValue;
-            }
-            $whereSql = implode(' AND ', $whereSql);
-        }
-        $sql .= ' WHERE ' . $whereSql;
-
-        $statement = $driver->getConnection()->prepare($sql);
-        $result = $statement->execute($parameters);
-
-        // return affected rows
+        $statement = $update->getParameterizedSqlString($this->adapter);
+        $result = $statement->execute($update->getParameterContainer());
         return $result->getAffectedRows();
     }
 
     public function delete($where)
     {
-        // replace with Db\Sql select
-        $adapter  = $this->adapter;
-        $driver   = $adapter->getDriver();
-        $platform = $adapter->getPlatform();
+        $delete = clone $this->sqlDelete;
+        $delete->from($this->tableName, $this->databaseSchema);
+        $delete->where($where);
 
-        $sql = 'DELETE FROM ';
-        if ($this->databaseSchema != '') {
-            $sql .= $platform->quoteIdentifier($this->databaseSchema)
-                . $platform->getIdentifierSeparator();
-        }
-
-        $whereSql = $where;
-        if (is_array($where)) {
-            $whereSql = $parameters = array();
-            foreach ($where as $whereName => $whereValue) {
-                $whereParamName = $driver->formatParameterName($whereName);
-                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-                $whereParameters[$whereName] = $whereValue;
-            }
-            $whereSql = implode(' AND ', $whereSql);
-        }
-        $sql .= $platform->quoteIdentifier($this->tableName)
-            . ' WHERE ' . $whereSql;
-
-        $statement = $driver->getConnection()->prepare($sql);
-        $result = $statement->execute($whereParameters);
-
-        // return affected rows
+        $statement = $delete->getParameterizedSqlString($this->adapter);
+        $result = $statement->execute($delete->getParameterContainer());
         return $result->getAffectedRows();
+
+
+//        // replace with Db\Sql select
+//        $adapter  = $this->adapter;
+//        $driver   = $adapter->getDriver();
+//        $platform = $adapter->getPlatform();
+//
+//        $sql = 'DELETE FROM ';
+//        if ($this->databaseSchema != '') {
+//            $sql .= $platform->quoteIdentifier($this->databaseSchema)
+//                . $platform->getIdentifierSeparator();
+//        }
+//
+//        $whereSql = $where;
+//        if (is_array($where)) {
+//            $whereSql = $parameters = array();
+//            foreach ($where as $whereName => $whereValue) {
+//                $whereParamName = $driver->formatParameterName($whereName);
+//                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
+//                $whereParameters[$whereName] = $whereValue;
+//            }
+//            $whereSql = implode(' AND ', $whereSql);
+//        }
+//        $sql .= $platform->quoteIdentifier($this->tableName)
+//            . ' WHERE ' . $whereSql;
+//
+//        $statement = $driver->getConnection()->prepare($sql);
+//        $result = $statement->execute($whereParameters);
+//
+//        // return affected rows
+//        return $result->getAffectedRows();
     }
 
 
