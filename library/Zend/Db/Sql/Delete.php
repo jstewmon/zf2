@@ -41,18 +41,7 @@ class Delete implements SqlInterface, ParameterizedSqlInterface
 
     public function isValid()
     {
-//        if ($this->table == null || !is_string($this->table)) {
-//            return false;
-//        }
-//
-//        if (count($this->values) == 0) {
-//            return false;
-//        }
-//
-//        if (count($this->columns) > 0 && count($this->columns) != count($this->values)) {
-//            return false;
-//        }
-
+        // @todo
         return true;
     }
 

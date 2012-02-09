@@ -35,7 +35,7 @@ class TableGateway implements TableGatewayInterface
     protected $databaseSchema = null;
 
     /**
-     * @var null
+     * @var ResultSet
      */
     protected $selectResultPrototype = null;
 
@@ -145,34 +145,12 @@ class TableGateway implements TableGatewayInterface
 
     public function select($where)
     {
-        // replace with Db\Sql select
-        $adapter  = $this->adapter;
-        $driver   = $adapter->getDriver();
-        $platform = $adapter->getPlatform();
+        $select = clone $this->sqlSelect;
+        $select->from($this->tableName, $this->databaseSchema);
+        $select->where($where);
 
-        $sql = 'SELECT * FROM ';
-        if ($this->databaseSchema != '') {
-            $sql .= $platform->quoteIdentifier($this->databaseSchema)
-                . $platform->getIdentifierSeparator();
-        }
-
-        $whereSql = $where;
-        if (is_array($where)) {
-            $whereSql = $parameters = array();
-            foreach ($where as $whereName => $whereValue) {
-                $whereParamName = $driver->formatParameterName($whereName);
-                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-                $whereParameters[$whereParamName] = $whereValue;
-            }
-            $whereSql = implode(' AND ', $whereSql);
-        }
-        $sql .= $platform->quoteIdentifier($this->tableName)
-            . ' WHERE ' . $whereSql;
-
-        $statement = $driver->getConnection()->prepare($sql);
-        $result = $statement->execute($whereParameters);
-
-        // return result set
+        $statement = $select->getParameterizedSqlString($this->adapter);
+        $result = $statement->execute($select->getParameterContainer());
         $resultSet = clone $this->selectResultPrototype;
         $resultSet->setDataSource($result);
         return $resultSet;
@@ -210,37 +188,6 @@ class TableGateway implements TableGatewayInterface
         $statement = $delete->getParameterizedSqlString($this->adapter);
         $result = $statement->execute($delete->getParameterContainer());
         return $result->getAffectedRows();
-
-
-//        // replace with Db\Sql select
-//        $adapter  = $this->adapter;
-//        $driver   = $adapter->getDriver();
-//        $platform = $adapter->getPlatform();
-//
-//        $sql = 'DELETE FROM ';
-//        if ($this->databaseSchema != '') {
-//            $sql .= $platform->quoteIdentifier($this->databaseSchema)
-//                . $platform->getIdentifierSeparator();
-//        }
-//
-//        $whereSql = $where;
-//        if (is_array($where)) {
-//            $whereSql = $parameters = array();
-//            foreach ($where as $whereName => $whereValue) {
-//                $whereParamName = $driver->formatParameterName($whereName);
-//                $whereSql[] = $platform->quoteIdentifier($whereName) . ' = ' . $whereParamName;
-//                $whereParameters[$whereName] = $whereValue;
-//            }
-//            $whereSql = implode(' AND ', $whereSql);
-//        }
-//        $sql .= $platform->quoteIdentifier($this->tableName)
-//            . ' WHERE ' . $whereSql;
-//
-//        $statement = $driver->getConnection()->prepare($sql);
-//        $result = $statement->execute($whereParameters);
-//
-//        // return affected rows
-//        return $result->getAffectedRows();
     }
 
 
