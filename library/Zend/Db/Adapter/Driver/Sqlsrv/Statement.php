@@ -2,7 +2,9 @@
 
 namespace Zend\Db\Adapter\Driver\Sqlsrv;
 
-use Zend\Db\Adapter\DriverStatementInterface;
+use Zend\Db\Adapter\DriverStatementInterface,
+    Zend\Db\Adapter\ParameterContainer,
+    Zend\Db\Adapter\ParameterContainerInterface;
 
 class Statement implements DriverStatementInterface
 {
@@ -92,13 +94,13 @@ class Statement implements DriverStatementInterface
     public function execute($parameters = null)
     {
         if ($parameters !== null) {
-            if ($parameters instanceof DriverStatement\ParameterContainer) {
-                $this->setParameterContainer($parameters);
-            } else {
-                $pContainerFactory = new DriverStatement\ContainerFactory();
-                $this->setParameterContainer($pContainerFactory->createContainer($parameters));
-                unset($pContainerFactory);
+            if (is_array($parameters)) {
+                $parameters = new ParameterContainer($parameters);
             }
+            if (!$parameters instanceof ParameterContainerInterface) {
+                throw new \InvalidArgumentException('ParameterContainer expected');
+            }
+            $this->parameterContainer = $parameters;
         }
 
         if ($this->parameterContainer) {

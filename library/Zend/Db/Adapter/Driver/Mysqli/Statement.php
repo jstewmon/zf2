@@ -4,7 +4,8 @@ namespace Zend\Db\Adapter\Driver\Mysqli;
 
 use Zend\Db\Adapter,
     Zend\Db\Adapter\DriverStatementInterface,
-    Zend\Db\Adapter\DriverStatement\ParameterContainerInterface;
+    Zend\Db\Adapter\ParameterContainer,
+    Zend\Db\Adapter\ParameterContainerInterface;
 
 class Statement implements DriverStatementInterface
 {
@@ -70,10 +71,8 @@ class Statement implements DriverStatementInterface
     public function execute($parameters = null)
     {
         if ($parameters != null) {
-            
             if (is_array($parameters)) {
-                $containerFactor = new \Zend\Db\Adapter\DriverStatement\ContainerFactory();
-                $parameters = $containerFactor->createContainer($parameters);
+                $parameters = new ParameterContainer($parameters);
             }
             if (!$parameters instanceof ParameterContainerInterface) {
                 throw new \InvalidArgumentException('ParameterContainer expected');

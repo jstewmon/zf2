@@ -186,5 +186,12 @@ class Connection implements Adapter\DriverConnectionInterface
         return $statement;
     }
 
+    public function getLastGeneratedId()
+    {
+        $sql = 'SELECT SCOPE_IDENTITY() as Current_Identity';
+        $result = sqlsrv_query($this->resource, $sql);
+        $row = sqlsrv_fetch_array($result);
+        return $row['Current_Identity'];
+    }
 }
     

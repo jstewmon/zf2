@@ -239,20 +239,11 @@ class Connection implements Adapter\DriverConnectionInterface
 
         $statement = $this->driver->createStatement($sql);
         return $statement;
+    }
 
-//        $stmtResource = $this->resource->prepare($sql, array(
-//            //PHPDataObject::ATTR_CURSOR => PHPDataObject::CURSOR_SCROLL,
-//        ));
-//
-//        if (!$stmtResource instanceof PDOStatement) {
-//            throw new \RuntimeException('Statement not produced');
-//        }
-//
-//        $statement = clone $this->driver->getStatementPrototype();
-//        $statement->setDriver($this->driver);
-//        $statement->setResource($stmtResource);
-//        $statement->setSql($sql);
-//        return $statement;
+    public function getLastGeneratedId()
+    {
+        return $this->resource->lastInsertId();
     }
 
 }
