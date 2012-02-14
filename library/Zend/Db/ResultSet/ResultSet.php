@@ -14,11 +14,11 @@ class ResultSet implements Iterator, ResultSetInterface
     protected $returnType = self::TYPE_OBJECT;
     
     /**
-     * @var \Zend\Db\ResultSet\DataSourceInterface
+     * @var \Traversable
      */
     protected $dataSource = null;
 
-    public function __construct(DataSourceInterface $dataSource = null, RowObjectInterface $rowObjectPrototype = null)
+    public function __construct($dataSource = null, RowObjectInterface $rowObjectPrototype = null)
     {
         if ($dataSource) {
             $this->setDataSource($dataSource);
